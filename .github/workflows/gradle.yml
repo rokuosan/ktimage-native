@@ -61,7 +61,7 @@ jobs:
           ls build/libs/jar
       - name: Build
         run: |
-          native-image -jar build/libs/jar build/libs/out/ktimage -H:+UnlockExperimentalVMOptions -H:EnableURLProtocols=http,https --no-fallback
+          native-image -jar build/libs/jar/*-all.jar build/libs/out/ktimage -H:+UnlockExperimentalVMOptions -H:EnableURLProtocols=http,https --no-fallback
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.3
         with:
