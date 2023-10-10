@@ -29,7 +29,7 @@ jobs:
         restore-keys: ${{ runner.os }}-gradle-
     - uses: graalvm/setup-graalvm@v1
       with:
-        java-version: '21'
+        java-version: '17'
         distribution: 'graalvm'
         github-token: ${{ secrets.GITHUB_TOKEN }}
         native-image-job-reports: 'true'
@@ -37,7 +37,7 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: shadowJar
-    - name: Build and run HelloWorld.java
+    - name: Build
       run: |
         native-image -jar build/libs/*-all.jar build/libs/out/ktimage -H:+UnlockExperimentalVMOptions -H:EnableURLProtocols=http,https --no-fallback
     
