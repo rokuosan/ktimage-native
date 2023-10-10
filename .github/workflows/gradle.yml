@@ -35,6 +35,11 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: shadowJar
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ktimage-jar
+        path: build/libs/*-all.jar
 
   buildNative:
     runs-on: windows-latest
@@ -47,9 +52,20 @@ jobs:
           distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
-      - name: Build
+      - name: Prepare directory
         run: |
           mkdir -p build/libs/out
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ktimage-jar
+          path: build/libs/ktimage-jar
+      - name: Unzip
+        run: |
+          ls build/libs/
+          unzip build/libs/ktimage-jar/ktimage-jar.zip -d build/libs/ktimage-jar
+      - name: Build
+        run: |
           native-image -jar build/libs/*-all.jar build/libs/out/ktimage -H:+UnlockExperimentalVMOptions -H:EnableURLProtocols=http,https --no-fallback
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.3
