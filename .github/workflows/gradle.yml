@@ -16,7 +16,8 @@ on:
 permissions: write-all
 
 jobs:
-  build:
+  build-jar:
+    name: Build Jar
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -34,19 +35,24 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: shadowJar
-    - uses: graalvm/setup-graalvm@v1
-      with:
-        java-version: '21'
-        distribution: 'graalvm'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        native-image-job-reports: 'true'
-    - name: Build
-      run: |
-        mkdir -p build/libs/out
-        native-image -jar build/libs/*-all.jar build/libs/out/ktimage -H:+UnlockExperimentalVMOptions -H:EnableURLProtocols=http,https --no-fallback
-    
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.3
-      with:
-        name: Package
-        path: build/libs/out/
+
+  buildNative:
+    runs-on: windows-latest
+    needs: build-jar
+    steps:
+      - uses: actions/checkout@v3
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+      - name: Build
+        run: |
+          mkdir -p build/libs/out
+          native-image -jar build/libs/*-all.jar build/libs/out/ktimage -H:+UnlockExperimentalVMOptions -H:EnableURLProtocols=http,https --no-fallback
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.3
+        with:
+          name: Package
+          path: build/libs/out/
