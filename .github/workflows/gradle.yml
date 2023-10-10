@@ -26,16 +26,20 @@ jobs:
         path: "~/.gradle/caches"
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/build.gradle.kts') }}
         restore-keys: ${{ runner.os }}-gradle-
-    - uses: graalvm/setup-graalvm@v1
+    - uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'graalvm'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        native-image-job-reports: 'true'
+        distribution: 'temurin'
     - name: Build with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: shadowJar
+    - uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: '21'
+        distribution: 'graalvm'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        native-image-job-reports: 'true'
     - name: Build
       run: |
         mkdir -p build/libs/out
