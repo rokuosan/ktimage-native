@@ -38,7 +38,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ktimage-jar
+        name: ktimage.jar
         path: build/libs/*-all.jar
 
   buildNative:
@@ -59,11 +59,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ktimage-jar
-          path: build/libs/ktimage-jar
-      - name: Unzip
+          path: build/libs/ktimage.jar
+      - name: Check
         run: |
           ls build/libs/
-          unzip build/libs/ktimage-jar/ktimage-jar.zip -d build/libs/ktimage-jar
       - name: Build
         run: |
           native-image -jar build/libs/*-all.jar build/libs/out/ktimage -H:+UnlockExperimentalVMOptions -H:EnableURLProtocols=http,https --no-fallback
