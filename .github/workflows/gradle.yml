@@ -58,7 +58,7 @@ jobs:
       - name: Download a single artifact
         uses: actions/download-artifact@v3
         with:
-          name: ktimage-jar
+          name: ktimage.jar
           path: build/libs/ktimage.jar
       - name: Check
         run: |
