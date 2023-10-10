@@ -13,8 +13,7 @@ on:
   pull_request:
     branches: [ "main" ]
 
-permissions:
-  contents: read
+permissions: write-all
 
 jobs:
   build:
@@ -39,6 +38,7 @@ jobs:
         arguments: shadowJar
     - name: Build
       run: |
+        mkdir -p build/libs/out
         native-image -jar build/libs/*-all.jar build/libs/out/ktimage -H:+UnlockExperimentalVMOptions -H:EnableURLProtocols=http,https --no-fallback
     
     - name: Upload a Build Artifact
